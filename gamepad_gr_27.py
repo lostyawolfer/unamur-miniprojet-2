@@ -1,22 +1,86 @@
 """
-Ce micro bit doit juste afficher et utiliser les boutons, donc send l'ordre
+Choix:
+------
+Faire avec une liste de liste. 5X5
 
+Choisis la direction avec l'inclinaison. A pour déplacer, B pour Lacher
 
-
-board = [[0]*5 for i in range(5)]
-
-
-def show_view_board():
+def create_new_pieces() -> bool:
     ...
 
-def a_is_pressed_gamepad():
+def collide_with_others():
     ...
 
-def b_is_pressed_gamepad():
+def execute_order():
+    ...
+
+def get_random_piece():
     ...
 
 def get_message_to_send_gamepad():
     ...
 
-    
-    """
+
+
+
+
+board = [[0]*5 for i in range(5)]
+def get_board_image(board: list) -> microbit.Image:
+    '''Create a microbit image object from the list[list[int]] format'''
+    res = ''
+    for i in board:
+        for j in i:
+            res += str(j)
+        res += ':'
+    return microbit.Image(res)
+def get_board_list(board: microbit.Image) -> list:
+    ...
+
+"""
+
+import microbit
+import radio
+
+#definition of functions
+def get_message():
+    message=None
+    while message==None:
+        microbit.sleep(250)
+        message=radio.recieve()
+    return message
+
+#...................
+#...................
+
+#settings
+group_id=27
+
+#setup radio recieve order
+radio.on()
+radio.config(group=group_id)
+
+#loop forever (until micro:bit is switched off)
+while True:
+    #get view of the board
+    view=get_message()
+
+    #clear screen
+    microbit.display.clear()
+
+    #show view of the board
+    #................
+
+    #wait for button A or B to be pressed
+    while not(microbit.button_a.is_pressed() or microbit.button_b.is_pressed()):
+        microbit.sleep(50)
+
+        if microbit.button_a.is_pressed():
+            #send current direction
+            #..................
+            #..................
+            ...
+        
+        elif microbit.button_b.is_pressed():
+            #notify the piece should be dropped
+            #radio.send(..........)
+            ...
