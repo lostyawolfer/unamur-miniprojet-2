@@ -1,4 +1,6 @@
 """
+TO DELETE WHEN CODE DONE
+
 Choix:
 ------
 Faire avec une liste de liste. 5X5
