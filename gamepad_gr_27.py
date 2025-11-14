@@ -25,17 +25,24 @@ def get_message_to_send_gamepad():
 
 
 board = [[0]*5 for i in range(5)]
+
 def get_board_image(board: list[list[int]]) -> microbit.Image:
     '''Create a microbit image object from the list[list[int]] format'''
     res = ''
     for i in board:
         for j in i:
-            res += str(j)
+            if j == 0:
+                res += '0'
+            elif j == 1:
+                res += '9'
+            else:
+                res += '5'
         res += ':'
     return microbit.Image(res)
+    
 def get_board_list(board: microbit.Image) -> list[list[int]]:
     '''Create a list[list[int]] format from a microbit image object'''
-    ...
+    ... # TODO: make this function
     
 
 """
