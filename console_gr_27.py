@@ -227,7 +227,7 @@ def can_be_move(board: list[list[int]], direction: str) -> bool:
 
 def drop(board: list[list[int]]) -> None:
     """
-    Drops the piece to drop to the lowest it can be.
+    Drops the piece to drop to the lowest it can be. Also set the piece as a dropped piece.
 
     Parameters:
     -----------
