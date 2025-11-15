@@ -119,10 +119,20 @@ def combine_pieces_dropped_and_to_drop(board: list[list[int]], piece:list[list[i
 
     Returns
     -------
-    status (bool) : False if the operation can't be done, True if it is done.
+    status (bool) : False if the operation can't be done, True if it can.
     """
     #Attention, il faut regarder si la pièce ne peut pas être mise plus à gauche ou plus à droite... Car [[0,0],[0,1]] existe par exemple
-    ...
+    position=[0, 0]
+    if piece[0]==[0, 0]:
+        position[1]=-1
+    if piece[0][0]==piece[1][0]==0:
+        position[0]=-1
+    if check_place_for_piece(board, piece, position):
+        place_piece(board, piece, position)
+        return True
+    return False
+
+
 
 def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> bool:
     """
@@ -172,8 +182,17 @@ def board_status_to_send(board : list[list[int]]) -> str:
     result (str): a string representing the state of the board, ready to be send. 
 
     """
-    #voir code de Kostiantyn en commentaire plus haut. Just ne pas transformer on objet image
-    ...
+    result = ''
+    for i in board:
+        for j in i: #chaque liste une par une et puis chaque éléments un par un
+            if j == 0:
+                res += '0'
+            elif j == 1:
+                result += '9'
+            else:
+                result += '5' #pour la pièce à drop
+        result += ':'
+    return result
 
 
 def execute_order(board : list[list[int]], order: str)-> bool:
@@ -223,7 +242,20 @@ def can_be_move(board: list[list[int]], direction: str) -> bool:
     -------
     result (bool): True if it can be moved, False otherwise
     """
-    ...
+    if direction =="L":
+        vector=[0, -1]
+    if direction=="R":
+        vector=[0, +1]
+    else:
+        vector=[1, 0] #si c'est B donc Bottom
+
+    for row_position, row in enumerate(board):
+        for collomn_positionn, element in enumerate(row):
+            if element==2:
+                if board[row_position+vector[0]][collomn_positionn+vector[1]] == 1:
+                    return False #si il y a un 1 là où on veut aller, alors on dis qu'on peut pas bouger
+    return True
+
 
 def drop(board: list[list[int]]) -> None:
     """
@@ -264,7 +296,7 @@ while not game_is_over:
     new_piece=get_random_piece(available_pieces)
     
     #check if new piece collides with dropped pieces
-    game_is_over=combine_pieces_dropped_and_to_drop(board, new_piece)
+    game_is_over= not combine_pieces_dropped_and_to_drop(board, new_piece)
 
     if not game_is_over:
         #ask orders until the current piece is dropped
