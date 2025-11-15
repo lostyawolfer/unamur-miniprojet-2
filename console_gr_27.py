@@ -107,8 +107,7 @@ def combine_pieces_dropped_and_to_drop(board: list[list[int]], piece:list[list[i
     -------
     status (bool) : False if the operation can't be done, True if it is done.
     """
-    #Attention, il faut bien mettre la pièce le plus bas possible, donc check les positions en dessous
-    # utiliser check_place_for_piece et place_piece...
+    #Attention, il faut regarder si la pièce ne peut pas être mise plus à gauche ou plus à droite... Car [[0,0],[0,1]] existe par exemple
     ...
 
 def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> bool:
@@ -125,6 +124,7 @@ def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coor
     -------
     Status (bool): False if the board and piece overlap, True otherwhise
     """
+    #Bien vérifier si un "1" ne sort pas de board
     ...
 
 def place_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> None:
