@@ -24,6 +24,20 @@ def get_random_piece():
 
 def get_message_to_send_gamepad():
     ...
+
+
+def get_board_image(board: list[list[int]]) -> microbit.Image:
+    '''Create a microbit image object from the list[list[int]] format'''
+    res = ''
+    for i in board:
+        for j in i:
+            if j == 0:
+                res += '0'
+            elif j == 1:
+                res += '9'
+            else:
+                res += '5'
+        res += ':'
 """
 
 import math
@@ -124,7 +138,7 @@ def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coor
     -------
     Status (bool): False if the board and piece overlap, True otherwhise
     """
-    #Bien vérifier si un "1" ne sort pas de board
+    #Bien vérifier si un "1" ne sort pas de board, mais les 0 peuvent.
     ...
 
 def place_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> None:
@@ -142,6 +156,90 @@ def place_piece(board : list[list[int]], piece : list[list[int]], coordonate: li
     None
     """
     ...
+
+
+def board_status_to_send(board : list[list[int]]) -> str:
+    """
+    Create a string from the board aimed to be sent by radio to the gamepad. 0 when there is no pieces, 5 when there is a piece
+    dropped and 9 for the piece to drop, with a ":" to separate every row of the list.
+
+    Parameters:
+    -----------
+    board (list[list[int]]) : the current state of the board
+
+    returns:
+    --------
+    result (str): a string representing the state of the board, ready to be send. 
+
+    """
+    #voir code de Kostiantyn en commentaire plus haut. Just ne pas transformer on objet image
+    ...
+
+
+def execute_order(board : list[list[int]], order: str)-> bool:
+    """
+    Execute one of the two order: "move [direction]" or "drop" on the piece to drop. Direction: L for left and R for right.
+    And return a bool depending on the type of the event.
+
+    Parameters:
+    -----------
+    board (list[list[int]]) : the board with the piece to drop as 2, dropped as 1 and none as 0.
+    order (str) : the order to be executed. "move R", "move L" or "drop".
+
+    Returns:
+    --------
+    done (bool): True if the order was to drop, False otherwise
+    """
+    #on peut utiliser des str.strip(order, " ") pour couper en deux à l'espace. Puis check si l'élément 1 de la string est move ou drop et si R ou L
+    #utiliser les fonctions move() et drop()
+    ...
+
+def move(board: list[list[int]], direction: str) -> None:
+    """
+    Move the piece to drop to the left L or to the right R. Does nothing if the piece can't be moved.
+
+    Parameters:
+    ----------
+    board (list[list[int]]) : the board with the piece to drop as 2, dropped as 1 and none as 0.
+    direction (str) : the direction to move the piece to drop, "L" or "R".
+
+    Returns:
+    -------
+    None
+    """
+    #utiliser can_be_move(), puis le faire si return True
+    ...
+
+def can_be_move(board: list[list[int]], direction: str) -> bool:
+    """
+    Check if we can move the piece to drop to the left L or to the right R or B to the bottom.
+
+    Parameters:
+    ----------
+    board (list[list[int]]) : the board with the piece to drop as 2, dropped as 1 and none as 0.
+    direction (str) : the direction to move the piece to drop, "L" or "R" or "B".
+
+    Returns:
+    -------
+    result (bool): True if it can be moved, False otherwise
+    """
+    ...
+
+def drop(board: list[list[int]]) -> None:
+    """
+    Drops the piece to drop to the lowest it can be.
+
+    Parameters:
+    -----------
+    board (list[list[int]]) : the board with the piece to drop as 2, dropped as 1 and none as 0.
+
+    Returns:
+    --------
+    None
+    """
+    #utiliser can_be_move(board, "B")
+    ...
+
 
 #settings
 group_id=27
@@ -173,13 +271,13 @@ while not game_is_over:
         piece_dropped=False
         while not piece_dropped:
             #send state of the board to the gamepad (as a string)
-            #radio.send(......)
+            radio.send(board_status_to_send(board))
 
             #wait until gamepad send an order
             order = get_message()
 
             #execute order (drop or move piece)
-            #................
+            piece_dropped=execute_order(board, order)
         #wait a few milliseconds and clear the screen
         microbit.sleep(500)
         microbit.display.clear()
