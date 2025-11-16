@@ -112,7 +112,7 @@ def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coor
 
 def place_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> None:
     """
-    Places the piece on the board at the given coordonates
+    Places the piece on the board and the given coordonates
 
     Parameters:
     ----------
@@ -124,7 +124,12 @@ def place_piece(board : list[list[int]], piece : list[list[int]], coordonate: li
     -------
     None
     """
-    ...
+    x, y = coordonate
+    
+    for i,row in enumerate(piece):
+        for j,cell in enumerate(row):
+            if cell == 1:
+                board[y + i][x + j] = 2
 
 
 def board_status_to_send(board : list[list[int]]) -> str:
@@ -156,7 +161,7 @@ def board_status_to_send(board : list[list[int]]) -> str:
 
 def execute_order(board : list[list[int]], order: str)-> bool:
     """
-    Execute one of the two order: "move [direction]" or "drop" on the piece to drop. Direction: left, right, up, down.
+    Execute one of the two order: "[direction]" or "drop" on the piece to drop. Direction: left, right, up, down.
     And return a bool depending on the type of the event.
 
     Parameters:
@@ -175,19 +180,41 @@ def execute_order(board : list[list[int]], order: str)-> bool:
 
 def move(board: list[list[int]], direction: str) -> None:
     """
-    Move the piece to drop to the left, right, up or down. Does nothing if the piece can't be moved.
+    Move the piece to drop to the left L or to the right R. Does nothing if the piece can't be moved.
 
     Parameters:
     ----------
     board (list[list[int]]) : the board with the piece to drop as 2, dropped as 1 and none as 0.
-    direction (str) : the direction to move the piece to drop, "L" or "R".
+    direction (str) : the direction to move the piece to drop, "L" or "R" or "D" or "U".
 
     Returns:
     -------
     None
     """
-    #utiliser can_be_move(), puis le faire si return True
-    ...
+
+    if can_be_move(board,direction)==True :
+        position=[]
+        #checking all the elements:
+        for row_index,row in enumerate(board):
+                for col_index,cell in enumerate(row):
+                        #stock stocks the piece list in the previous empty list (positoin):                      
+                        if cell==2:
+                            position.append((row_index,col_index))
+        #cleans the place where were the pieces:
+        for (a,b) in position:
+             board[a][b]=0
+        #moved to wanted destination:
+        vector=[0, 0]
+        for (a,b) in position:
+            if direction=="left":
+                vector[0]=-1
+            elif direction=="right":
+                vector[0]=+1
+            elif direction=="down":
+                vector[1]=+1
+            else: #if it is "up"
+                vector[1]=-1
+            board[a+vector[1]][b+vector[0]]=2
 
 def can_be_move(board: list[list[int]], direction: str) -> bool:
     """
@@ -234,7 +261,10 @@ def drop(board: list[list[int]]) -> None:
     --------
     None
     """
-    ...
+    for row_index,row in enumerate(board):
+        for col_index,cell in enumerate(row):
+            if cell==2:
+                board[row_index][col_index]=1
 
 
 #settings
