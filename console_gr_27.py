@@ -52,11 +52,11 @@ def get_available_pieces() -> list[list[list[int]]]:
 
 def get_random_piece(available_pieces : list[list[list[int]]]) -> list[list[int]]:
     """
-    Gives a random piece from the available_piece list.
+    Gives a random piece from the available_pieces list.
 
     Parameters:
     -----------
-    available_pieces (list[list[list[int]]]): a list of the available pieces, in a 2x2 square matrice.
+    available_pieces (list[list[list[int]]]): a list of the available pieces.
 
     Returns:
     -------
@@ -94,7 +94,8 @@ def combine_pieces_dropped_and_to_drop(board: list[list[int]], piece:list[list[i
 
 def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> bool:
     """
-    Check if a piece can be placed on the board in the (x, y) coordonate, starting from the top left.
+    Check if a piece can be placed on the board in the (x, y) coordonate, starting from the top left. Useful for when the piece
+    haven't been added to the board yet.
 
     Parameters:
     -----------
@@ -111,7 +112,7 @@ def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coor
 
 def place_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> None:
     """
-    Places the piece on the board and the given coordonates
+    Places the piece on the board at the given coordonates
 
     Parameters:
     ----------
@@ -155,13 +156,13 @@ def board_status_to_send(board : list[list[int]]) -> str:
 
 def execute_order(board : list[list[int]], order: str)-> bool:
     """
-    Execute one of the two order: "move [direction]" or "drop" on the piece to drop. Direction: L for left and R for right.
+    Execute one of the two order: "move [direction]" or "drop" on the piece to drop. Direction: left, right, up, down.
     And return a bool depending on the type of the event.
 
     Parameters:
     -----------
     board (list[list[int]]) : the board with the piece to drop as 2, dropped as 1 and none as 0.
-    order (str) : the order to be executed. "move R", "move L" or "drop".
+    order (str) : the order to be executed. "right", "left", "up", "down" or "drop".
 
     Returns:
     --------
@@ -169,11 +170,12 @@ def execute_order(board : list[list[int]], order: str)-> bool:
     """
     #on peut utiliser des str.strip(order, " ") pour couper en deux à l'espace. Puis check si l'élément 1 de la string est move ou drop et si R ou L
     #utiliser les fonctions move() et drop()
+    #renvoie les commentaires en fonction de la correction
     ...
 
 def move(board: list[list[int]], direction: str) -> None:
     """
-    Move the piece to drop to the left L or to the right R. Does nothing if the piece can't be moved.
+    Move the piece to drop to the left, right, up or down. Does nothing if the piece can't be moved.
 
     Parameters:
     ----------
@@ -189,35 +191,40 @@ def move(board: list[list[int]], direction: str) -> None:
 
 def can_be_move(board: list[list[int]], direction: str) -> bool:
     """
-    Check if we can move the piece to drop to the left L or to the right R or B to the bottom.
+    Check if we can move the piece to drop to the left, right, up or down.
 
     Parameters:
     ----------
     board (list[list[int]]) : the board with the piece to drop as 2, dropped as 1 and none as 0.
-    direction (str) : the direction to move the piece to drop, "L" or "R" or "B".
+    direction (str) : the direction to move the piece to drop, "left", "right", "up" or "down".
 
     Returns:
     -------
     result (bool): True if it can be moved, False otherwise
     """
-    if direction =="L":
+    if direction =="left":
         vector=[0, -1]
-    if direction=="R":
+    elif direction=="right":
         vector=[0, +1]
+    elif direction=="up":
+        vector=[-1, 0]
     else:
-        vector=[1, 0] #si c'est B donc Bottom
+        vector=[1, 0] #si c'est down
 
     for row_position, row in enumerate(board):
         for collomn_positionn, element in enumerate(row):
             if element==2:
-                if board[row_position+vector[0]][collomn_positionn+vector[1]] == 1:
-                    return False #si il y a un 1 là où on veut aller, alors on dis qu'on peut pas bouger
+                try:
+                    if board[row_position+vector[0]][collomn_positionn+vector[1]] == 1:
+                        return False #si il y a un 1 là où on veut aller, alors on dis qu'on peut pas bouger
+                except:
+                    return  False #si la case est hors du board
     return True
 
 
 def drop(board: list[list[int]]) -> None:
     """
-    Drops the piece to drop to the lowest it can be. Also set the piece as a dropped piece.
+    Set the piece as a dropped piece.
 
     Parameters:
     -----------
@@ -227,7 +234,6 @@ def drop(board: list[list[int]]) -> None:
     --------
     None
     """
-    #utiliser can_be_move(board, "B")
     ...
 
 
