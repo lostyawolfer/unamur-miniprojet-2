@@ -44,6 +44,44 @@ def get_tilt() -> str | None:
     else:
         return None
 
+
+
+def get_tilt_new() -> str | None:
+    """
+    Gets current BBC micro:bit's general tilt direction.
+    This is an updated function to be used to quickly test different directions.
+
+    Returns string ['up', 'down', 'left', 'right'] if a direction is detected,
+    None if no tilt or the tilt directions are ambiguous (exactly equal).
+    """
+    x = microbit.accelerometer.get_x()
+    y = microbit.accelerometer.get_y()
+
+    # tilt directions:
+    #
+    #       up
+    #        | -y
+    #        |
+    # left   |    right
+    # -x ----+---> +x
+    #        |
+    #        |
+    #        V +y
+    #       down
+
+    if abs(x) > abs(y):
+        return 'right' if y > 0 else 'left'
+        # if x=0 then either the y coordinate part of condition is triggered,
+        # or they both are 0, meaning they are equal, which goes to "else", returning None
+
+    elif abs(y) > abs(x):
+        return 'down' if y > 0 else 'up'
+        # if y=0 then either the x coordinate part of condition is triggered,
+        # or they both are 0, meaning they are equal, which goes to "else", returning None
+
+    else:
+        return None
+
 ##################### ATTENTION: TO BE DELETED #####################
 ### temporary function, to be deleted on final project upload
 ### allows to check the integrity of tilt direction readings
