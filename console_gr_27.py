@@ -47,7 +47,7 @@ def get_available_pieces() -> list[list[list[int]]]:
                 for square4 in range(2):
                     available_pieces+=[[[square1, square2], [square3, square4]]] #ajoute à la liste, le 
                     #carrée en tant que un seul élément
-    del available_pieces[0], available_pieces[2] #enlève le cas où le carré est vide
+    del available_pieces[0] #enlève le cas où le carré est vide
     return available_pieces
 
 def get_random_piece(available_pieces : list[list[list[int]]]) -> list[list[int]]:
