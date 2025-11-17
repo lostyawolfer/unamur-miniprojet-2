@@ -1,7 +1,9 @@
+import math
 import random
 import microbit
 import radio
 
+#définition de fonction
 def get_message():
     message=None
     while message==None:
@@ -20,11 +22,11 @@ def get_available_pieces() -> list[list[list[int]]]:
             for square3 in range(2):
                 for square4 in range(2):
                     available_pieces+=[[[square1, square2], [square3, square4]]]
-    del available_pieces[0], available_pieces[2]
+    del available_pieces[0]
     return available_pieces
 
 def get_random_piece(available_pieces : list[list[list[int]]]) -> list[list[int]]:
-    ...
+    return random.choice(available_pieces)
 
 
 def combine_pieces_dropped_and_to_drop(board: list[list[int]], piece:list[list[int]]) -> bool:
@@ -40,8 +42,18 @@ def combine_pieces_dropped_and_to_drop(board: list[list[int]], piece:list[list[i
 
 
 
-def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> bool:
-    ...
+def check_place_for_piece(board: list[list[int]], piece: list[list[int]], coordonate: list[int]) -> bool:
+    x0, y0 = coordonate
+    for y in range(len(piece)):
+        for x in range(len(piece[0])):
+            if piece[y][x] == 0:
+                "do nothing"
+            else:
+                if x0 + x < 0 or x0 + x >= len(board[0]) or y0 + y < 0 or y0 + y >= len(board):
+                    return False
+                if board[y0 + y][x0 + x] == 1:
+                    return False
+    return True
 
 def place_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> None:
     x, y = coordonate
@@ -66,14 +78,23 @@ def board_status_to_send(board : list[list[int]]) -> str:
     return result
 
 
-def execute_order(board : list[list[int]], order: str)-> bool:
-    ...
+def execute_order(board : list[list[int]], order: str, score: int)->  tuple[bool,int]:
+    if order == "drop":
+        drop(board)
+        score+=1
+        return True, score
+        
+    if order in ["up", "down", "left", "right"]:
+        move(board, order)
+        return False, score
+    return False, score
 
 def move(board: list[list[int]], direction: str) -> None:
+
     if can_be_move(board,direction)==True :
         position=[]
         for row_index,row in enumerate(board):
-                for col_index,cell in enumerate(row):                 
+                for col_index,cell in enumerate(row):                    
                         if cell==2:
                             position.append((row_index,col_index))
         for (a,b) in position:
@@ -86,7 +107,7 @@ def move(board: list[list[int]], direction: str) -> None:
                 vector[0]=+1
             elif direction=="down":
                 vector[1]=+1
-            else: #if it is "up"
+            else:
                 vector[1]=-1
             board[a+vector[1]][b+vector[0]]=2
 
@@ -143,7 +164,7 @@ while not game_is_over:
 
             order = get_message()
 
-            piece_dropped=execute_order(board, order)
+            piece_dropped, nb_dropped_pieces=execute_order(board, order, nb_dropped_pieces)
         microbit.sleep(500)
         microbit.display.clear()
 

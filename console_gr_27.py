@@ -63,7 +63,7 @@ def get_random_piece(available_pieces : list[list[list[int]]]) -> list[list[int]
     piece (list[list[int]]) : A random piece of the available pieces.
 
     """
-    ...
+    return random.choice(available_pieces)
 
 
 def combine_pieces_dropped_and_to_drop(board: list[list[int]], piece:list[list[int]]) -> bool:
@@ -92,13 +92,12 @@ def combine_pieces_dropped_and_to_drop(board: list[list[int]], piece:list[list[i
 
 
 
-def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> bool:
+def check_place_for_piece(board: list[list[int]], piece: list[list[int]], coordonate: list[int]) -> bool:
     """
-    Check if a piece can be placed on the board in the (x, y) coordonate, starting from the top left. Useful for when the piece
-    haven't been added to the board yet.
+    Verifie if the piece can be placed in the board.
 
-    Parameters:
-    -----------
+    Parameters
+    ---------
     board (list[list[int]]) : the board we want to put the piece on
     piece (list[list[int]]) : the piece we want to put in the x, y coordonate
     coordonate (list[int]) : [x, y] being the coordonate of the top left of where we want to put the piece
@@ -107,8 +106,18 @@ def check_place_for_piece(board : list[list[int]], piece : list[list[int]], coor
     -------
     Status (bool): False if the board and piece overlap, True otherwhise
     """
-    #Bien vérifier si un "1" ne sort pas de board, mais les 0 peuvent.
-    ...
+    x0, y0 = coordonate  
+    # loop over X et Y
+    for y in range(len(piece)):
+        for x in range(len(piece[0])):
+            if piece[y][x] == 0:
+                "do nothing"  #it's empty , nothing to do 
+            else:
+                if x0 + x < 0 or x0 + x >= len(board[0]) or y0 + y < 0 or y0 + y >= len(board):
+                    return False
+                if board[y0 + y][x0 + x] == 1:
+                    return False
+    return True
 
 def place_piece(board : list[list[int]], piece : list[list[int]], coordonate: list[int]) -> None:
     """
@@ -159,24 +168,33 @@ def board_status_to_send(board : list[list[int]]) -> str:
     return result
 
 
-def execute_order(board : list[list[int]], order: str)-> bool:
+def execute_order(board : list[list[int]], order: str, score: int)->  tuple[bool,int]:
     """
-    Execute one of the two order: "[direction]" or "drop" on the piece to drop. Direction: left, right, up, down.
-    And return a bool depending on the type of the event.
+    Execute one of the two order: "move [direction]" or "drop" on the piece to drop. Direction: left, right, up, down.
+    And return a bool depending on the type of the event, and the final score.
 
     Parameters:
     -----------
     board (list[list[int]]) : the board with the piece to drop as 2, dropped as 1 and none as 0.
     order (str) : the order to be executed. "right", "left", "up", "down" or "drop".
+    score (int) : the current score.
 
     Returns:
-    --------
+    --------                                                        
     done (bool): True if the order was to drop, False otherwise
+    score (int): The new score, incremented if it was a drop.
     """
     #on peut utiliser des str.strip(order, " ") pour couper en deux à l'espace. Puis check si l'élément 1 de la string est move ou drop et si R ou L
     #utiliser les fonctions move() et drop()
-    #renvoie les commentaires en fonction de la correction
-    ...
+    if order == "drop":
+        drop(board)
+        score+=1
+        return True, score
+        
+    if order in ["up", "down", "left", "right"]:
+        move(board, order)
+        return False, score
+    return False, score
 
 def move(board: list[list[int]], direction: str) -> None:
     """
@@ -303,7 +321,7 @@ while not game_is_over:
             order = get_message()
 
             #execute order (drop or move piece)
-            piece_dropped=execute_order(board, order)
+            piece_dropped, nb_dropped_pieces=execute_order(board, order, nb_dropped_pieces)
         #wait a few milliseconds and clear the screen
         microbit.sleep(500)
         microbit.display.clear()
