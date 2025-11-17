@@ -81,3 +81,4 @@ while True:
         elif microbit.button_b.is_pressed():
             # notify the piece should be dropped
             radio.send('drop')
+
