@@ -45,43 +45,6 @@ def get_tilt() -> str | None:
     else:
         return None
 
-##################### ATTENTION: TO BE DELETED #####################
-### temporary function, to be deleted on final project upload
-### allows to check the integrity of tilt direction readings
-def show_tilt_on_screen() -> None:
-    """Shows an arrow in the direction of current tilt, or a cross if no tilt is detected."""
-    tilt = get_tilt()
-    if tilt == 'right':
-        microbit.display.show(microbit.Image('00900:'
-                                             '00990:'
-                                             '99999:'
-                                             '00990:'
-                                             '00900'))
-    elif tilt == 'left':
-        microbit.display.show(microbit.Image('00900:'
-                                             '09900:'
-                                             '99999:'
-                                             '09900:'
-                                             '00900'))
-    elif tilt == 'up':
-        microbit.display.show(microbit.Image('00900:'
-                                             '09990:'
-                                             '99999:'
-                                             '00900:'
-                                             '00900'))
-    elif tilt == 'down':
-        microbit.display.show(microbit.Image('00900:'
-                                             '00900:'
-                                             '99999:'
-                                             '09990:'
-                                             '00900'))
-    else:
-        microbit.display.show(microbit.Image('90009:'
-                                             '09090:'
-                                             '00900:'
-                                             '09090:'
-                                             '90009'))
-
 #...................
 #...................
 
@@ -91,17 +54,6 @@ group_id=27
 # setup radio receive order
 radio.on()
 radio.config(group=group_id)
-
-
-##################### ATTENTION: TO BE DELETED #####################
-### temporary code, to be deleted on final project upload
-### allows to check the integrity of tilt direction readings
-### comment or uncomment when needed
-# while True:
-#     show_tilt_on_screen()
-#     microbit.sleep(50)
-
-
 
 
 # loop forever (until micro:bit is switched off)
