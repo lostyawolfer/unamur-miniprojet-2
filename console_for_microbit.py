@@ -8,7 +8,7 @@ def get_message():
     message=None
     while message==None:
         microbit.sleep(250)
-        message=radio.recieve()
+        message=radio.receive()
     return message
 
 def create_empty_board(size : int) -> list[list[int]]:
@@ -69,7 +69,7 @@ def board_status_to_send(board : list[list[int]]) -> str:
     for i in board:
         for j in i:
             if j == 0:
-                res += '0'
+                result += '0'
             elif j == 1:
                 result += '9'
             else:
